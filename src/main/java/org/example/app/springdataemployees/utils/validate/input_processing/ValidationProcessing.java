@@ -117,8 +117,8 @@ public class ValidationProcessing {
         }
     }
 
-    private void validateIsWork(Boolean  isWork) {
-        ValidateResultDTO answer = validateField(isWork.toString(), EValidateCustomer.IS_WORKING);
+    private void validateIsWork(String  isWork) {
+        ValidateResultDTO answer = validateField(isWork, EValidateCustomer.IS_WORKING);
         if (answer.isValid()) {
             isValid = false;
             validationFormErrors.put("isWork", String.join(", ", answer.getErrorsList()));

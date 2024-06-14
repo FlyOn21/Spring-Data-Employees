@@ -135,7 +135,7 @@ public class EmployeeServis {
         employee.setEmail(employeeData.getEmail());
         employee.setPhoneNumber(employeeData.getPhoneNumber());
         employee.setPosition(employeeData.getPosition());
-        employee.setIsWork(employeeData.getIsWork());
+        employee.setIsWork(Boolean.valueOf(employeeData.getIsWork()));
         employeesRepository.save(employee);
         return ResponseEntity.status(HttpStatus.CREATED).body(employee);
     }
@@ -171,7 +171,7 @@ public class EmployeeServis {
             employee.setPosition(employeeData.getPosition());
         }
         if (employeeData.getIsWork() != null) {
-            employee.setIsWork(employeeData.getIsWork());
+            employee.setIsWork(Boolean.valueOf(employeeData.getIsWork()));
         }
         employeesRepository.save(employee);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(employee);

@@ -17,5 +17,5 @@ public class InputDataForValidateDTO {
     private String email;
     private String phoneNumber;
     private String position;
-    private Boolean isWork;
+    private String isWork;
 }
