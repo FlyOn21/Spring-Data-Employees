@@ -9,6 +9,7 @@ import org.example.app.springdataemployees.response_dto.FailedValidationResponse
 import org.example.app.springdataemployees.utils.validate.input_processing.ValidationProcessing;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,9 +17,11 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class ExceptionsResolvers {
@@ -47,7 +50,13 @@ public class ExceptionsResolvers {
             Map<String, String> errors = new HashMap<>();
             ((HandlerMethodValidationException) ex).getAllValidationResults().forEach((error) -> errors.put(error.getMethodParameter().getParameter().getName(), error.getResolvableErrors().getFirst().getDefaultMessage()));
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new FailedValidationResponseDTO(ex.getClass().getSimpleName(), errors));
-
+        }
+        if (ex instanceof HttpMessageNotReadableException) {
+            SERVICE_LOGGER.error("ERROR HttpMessageNotReadableException: {}", ex.getMessage());
+            CONSOLE_LOGGER.error("ERROR HttpMessageNotReadableException: {}", ex.getMessage());
+            Map<String, String> errors = new HashMap<>();
+            errors.put("bodyError", ex.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new FailedValidationResponseDTO(ex.getClass().getSimpleName(), errors));
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new FailedResponseDTO(ex.getClass().getSimpleName(), Collections.singletonList(ex.getMessage())));
 
